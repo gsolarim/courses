@@ -1,0 +1,31 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-MX
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Tickets_2021","Tickets_2022","Tickets_2023","Vendedores","Clientes","Productos","Categorías de productos","Sucursales","Tickets"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'Categorías de productos'
+ref table DateTableTemplate_5403dd61-1ce4-45d4-b236-24cb597f4224
+ref table Clientes
+ref table Productos
+ref table Vendedores
+ref table Sucursales
+ref table Tickets
+ref table LocalDateTable_0ed1d486-c9f0-468e-a2c3-6e8590f87426
+ref table LocalDateTable_fd49e8ca-79df-47fe-94c5-094188c2f2ae
+ref table LocalDateTable_1034a138-53b6-4833-a77e-216e05259c73
+ref table LocalDateTable_a791a06c-d720-40e5-a342-59715b5a7616
+ref table LocalDateTable_d884fceb-27a0-485a-8ef2-c5f44e798733
+ref table Calendario
+ref table LocalDateTable_22cd0301-3e50-4d71-9b71-8bc2e4391ee3
+
+ref cultureInfo en-US
+

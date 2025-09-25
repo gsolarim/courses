@@ -1,0 +1,80 @@
+table Productos
+	lineageTag: 1807f4e3-86b0-4ca6-9e92-05c72748f793
+
+	column ProductoID
+		dataType: string
+		lineageTag: 8486d465-f20f-411f-a73d-ebdb97738135
+		summarizeBy: none
+		sourceColumn: ProductoID
+
+		annotation SummarizationSetBy = Automatic
+
+	column NombreProducto
+		dataType: string
+		lineageTag: 284685a8-9572-41a2-bae8-c5ba04e0a2f4
+		summarizeBy: none
+		sourceColumn: NombreProducto
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subcategoría
+		dataType: string
+		lineageTag: 8c046ec8-73ed-4689-bd99-b71841871e28
+		summarizeBy: none
+		sourceColumn: Subcategoría
+
+		annotation SummarizationSetBy = Automatic
+
+	column Marca
+		dataType: string
+		lineageTag: c45a3006-dfe6-4a3f-a507-e6fc1f18baf1
+		summarizeBy: none
+		sourceColumn: Marca
+
+		annotation SummarizationSetBy = Automatic
+
+	column Modelo
+		dataType: string
+		lineageTag: f4e20eb6-2755-4bfa-9677-cb52622b5964
+		summarizeBy: none
+		sourceColumn: Modelo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Precio
+		dataType: double
+		lineageTag: b5763f5c-fbde-4e95-a167-3109fc151a1d
+		summarizeBy: sum
+		sourceColumn: Precio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Subcategoría + Marca' = ```
+			
+			//CONCATENATE([Subcategoría],[Marca])  
+			[Subcategoría]&" "&[Marca]
+			```
+		lineageTag: 45cd1df0-b316-485a-89cc-b6d029b550d5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Productos = m
+		mode: import
+		source =
+				let
+				    Source = GoogleSheets.Contents("https://docs.google.com/spreadsheets/d/1KLnRPohBw2MS2UXNui2SU9rgnLvt-2MMcSEm2Wi2veQ/edit?gid=0#gid=0"),
+				    Productos_Table = Source{[name="Productos",ItemKind="Table"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Productos_Table, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"ProductoID", Int64.Type}, {"NombreProducto", type text}, {"Subcategoría", type text}, {"Marca", type text}, {"Modelo", type text}, {"Precio", type number}}),
+				    #"Filas en blanco eliminadas" = Table.SelectRows(#"Tipo cambiado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Filas en blanco eliminadas",{{"ProductoID", type text}})
+				in
+				    #"Tipo cambiado1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegación
+

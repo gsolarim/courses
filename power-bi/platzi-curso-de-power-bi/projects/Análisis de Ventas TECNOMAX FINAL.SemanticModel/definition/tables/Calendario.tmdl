@@ -1,0 +1,51 @@
+table Calendario
+	lineageTag: ed138175-5a34-4a37-bbec-a30ae8fd5bee
+
+	column Date
+		formatString: Short Date
+		lineageTag: 2f1f80ec-8417-4536-8b91-953e503d183b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variación
+			isDefault
+			relationship: c61ec992-c492-49d6-860f-5a1e27ea8ff8
+			defaultHierarchy: LocalDateTable_22cd0301-3e50-4d71-9b71-8bc2e4391ee3.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes = MONTH([Date])
+		formatString: 0
+		lineageTag: babe0040-9f10-4fdf-887b-77bfb5ccfa6b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mes texto' = SWITCH([Mes],1,"Enero",2,"Febrero",3,"Marzo",4,"Abril",5,"Mayo",6,"Junio",7,"Julio",8,"Agosto",9,"Septiembre",10,"Octubre",11,"Noviembre",12,"Diciembre")
+		lineageTag: e2a213d5-c1fc-4d91-a3c4-e4fee3ead263
+		summarizeBy: none
+		sortByColumn: Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Día de semana #' = WEEKDAY([Date],1)
+		formatString: 0
+		lineageTag: 55c83060-391e-4fde-9615-ca645cb5dde2
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Día de la semana texto' = SWITCH([Día de semana #],1,"Domingo",2,"Lunes",3,"Martes",4,"Miercoles",5,"Jueves",6,"Viernes",7,"Sábado")
+		lineageTag: ddeca657-0cd4-4611-8272-71716988abb4
+		summarizeBy: none
+		sortByColumn: 'Día de semana #'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendario = calculated
+		mode: import
+		source = CALENDAR(DATE(2021,01,01),DATE(2023,12,31))
+
+	annotation PBI_Id = 89e77cc578bc4a5aa979f9067d31d5a1
+

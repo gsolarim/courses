@@ -1,0 +1,113 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 194.66667175292969
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 229.56033771428594,
+            "y": 164.97831485714289
+          },
+          "nodeIndex": "Categorías de productos",
+          "nodeLineageTag": "756eab37-eba2-4dde-862b-70ceb45829e5",
+          "size": {
+            "height": 156.34497600000003,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 237.93941399999994,
+            "y": 551.00678700000049
+          },
+          "nodeIndex": "Clientes",
+          "nodeLineageTag": "bef6ede7-7167-4e87-baa4-cc9399946fe6",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 568,
+            "y": 90
+          },
+          "nodeIndex": "Productos",
+          "nodeLineageTag": "1807f4e3-86b0-4ca6-9e92-05c72748f793",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 897.547757,
+            "y": 225.6083430000001
+          },
+          "nodeIndex": "Vendedores",
+          "nodeLineageTag": "7a83605a-8339-42d5-a933-e36089e7fe3f",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 956.24285738087372,
+            "y": 578.54990900000053
+          },
+          "nodeIndex": "Sucursales",
+          "nodeLineageTag": "3aaeac25-9efd-4db7-b34e-0523e570610f",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 561.23618297622761,
+            "y": 412.84367933333363
+          },
+          "nodeIndex": "Tickets",
+          "nodeLineageTag": "33ebfdc9-a5cc-40ee-b521-f65a991e0e3c",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 37.349186333254579,
+            "y": 339.83672683333356
+          },
+          "nodeIndex": "Calendario",
+          "nodeLineageTag": "ed138175-5a34-4a37-bbec-a30ae8fd5bee",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 60,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

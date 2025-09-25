@@ -1,0 +1,98 @@
+table Vendedores
+	lineageTag: 7a83605a-8339-42d5-a933-e36089e7fe3f
+
+	column VendedorID
+		dataType: string
+		lineageTag: c8b360dd-ca85-40e2-aa30-394bdf516ec5
+		summarizeBy: none
+		sourceColumn: VendedorID
+
+		annotation SummarizationSetBy = Automatic
+
+	column NombreVendedor
+		dataType: string
+		lineageTag: 65c936a3-c1f8-4e40-8d64-dcd867d5e1ae
+		summarizeBy: none
+		sourceColumn: NombreVendedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaContratacion
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5a07924e-b5ac-41bc-89e1-5c0f4a27a6db
+		summarizeBy: none
+		sourceColumn: FechaContratacion
+
+		variation Variación
+			isDefault
+			relationship: 665d4a7f-7275-446e-b125-e2fd4ee843de
+			defaultHierarchy: LocalDateTable_0ed1d486-c9f0-468e-a2c3-6e8590f87426.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column FechaSalida
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d0adc928-2154-4a11-a566-3363821a5c7a
+		summarizeBy: none
+		sourceColumn: FechaSalida
+
+		variation Variación
+			isDefault
+			relationship: f05a789f-4816-42e9-8cb9-a848f3f607be
+			defaultHierarchy: LocalDateTable_fd49e8ca-79df-47fe-94c5-094188c2f2ae.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column SucursalID
+		dataType: string
+		lineageTag: 8c4a836a-bee4-436c-870b-50a43d4fa96c
+		summarizeBy: none
+		sourceColumn: SucursalID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaNacimiento
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c6c9cef0-a152-4893-a7b5-c2fa3fd44712
+		summarizeBy: none
+		sourceColumn: FechaNacimiento
+
+		variation Variación
+			isDefault
+			relationship: 7ec70f85-26f6-494b-bbe0-89d624cac7aa
+			defaultHierarchy: LocalDateTable_1034a138-53b6-4833-a77e-216e05259c73.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Género
+		dataType: string
+		lineageTag: b9929c6a-3c2d-4a60-a4e2-7fc582d0611a
+		summarizeBy: none
+		sourceColumn: Género
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Vendedores = m
+		mode: import
+		source =
+				let
+				    Source = GoogleSheets.Contents("https://docs.google.com/spreadsheets/d/1KLnRPohBw2MS2UXNui2SU9rgnLvt-2MMcSEm2Wi2veQ/edit?gid=0#gid=0"),
+				    Vendedores_Table = Source{[name="Vendedores",ItemKind="Table"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Vendedores_Table, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"VendedorID", type text}, {"NombreVendedor", type text}, {"FechaContratacion", type date}, {"FechaSalida", type date}, {"SucursalID", type text}, {"FechaNacimiento", type date}, {"Género", type text}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegación
+

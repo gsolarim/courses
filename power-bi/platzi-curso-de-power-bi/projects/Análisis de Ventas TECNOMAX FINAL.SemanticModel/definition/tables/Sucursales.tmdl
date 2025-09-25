@@ -1,0 +1,75 @@
+table Sucursales
+	lineageTag: 3aaeac25-9efd-4db7-b34e-0523e570610f
+
+	column SUCURSAL_ID
+		dataType: string
+		lineageTag: 2b25ff3c-8581-4b73-b7d8-cbe9d6d90886
+		summarizeBy: none
+		sourceColumn: SUCURSAL_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SUCURSAL_NOMBRE
+		dataType: string
+		lineageTag: edea5433-27fb-4b4b-92f3-2dbde5dc6792
+		summarizeBy: none
+		sourceColumn: SUCURSAL_NOMBRE
+
+		annotation SummarizationSetBy = Automatic
+
+	column DIRECCIÓN
+		dataType: string
+		lineageTag: 2074773e-5ef8-43bd-81d8-b9cee38478c4
+		summarizeBy: none
+		sourceColumn: DIRECCIÓN
+
+		annotation SummarizationSetBy = Automatic
+
+	column CIUDAD
+		dataType: string
+		lineageTag: 8c17273b-700c-4c49-9f6f-f5a9fdd99ce8
+		summarizeBy: none
+		sourceColumn: CIUDAD
+
+		annotation SummarizationSetBy = Automatic
+
+	column ESTADO
+		dataType: string
+		lineageTag: 669d443b-aa9e-40df-8cb1-993c007597aa
+		summarizeBy: none
+		sourceColumn: ESTADO
+
+		annotation SummarizationSetBy = Automatic
+
+	column COORDENADAS
+		dataType: string
+		lineageTag: ae78e5ed-aff5-400b-a7e6-9553f09777aa
+		summarizeBy: none
+		sourceColumn: COORDENADAS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sucursal nombre corto'
+		dataType: string
+		lineageTag: ff1155db-3a2e-4b7a-8335-44cd9e82a4f3
+		summarizeBy: none
+		sourceColumn: Sucursal nombre corto
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sucursales = m
+		mode: import
+		source =
+				let
+				    Source = GoogleSheets.Contents("https://docs.google.com/spreadsheets/d/1KLnRPohBw2MS2UXNui2SU9rgnLvt-2MMcSEm2Wi2veQ/edit?gid=0#gid=0"),
+				    #"Sucursales (Server)_Table" = Source{[name="Sucursales (Server)",ItemKind="Table"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(#"Sucursales (Server)_Table", [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"SUCURSAL_ID", type text}, {"SUCURSAL_NOMBRE", type text}, {"DIRECCIÓN", type text}, {"CIUDAD", type text}, {"ESTADO", type text}, {"COORDENADAS", type text}}),
+				    #"Personalizada agregada" = Table.AddColumn(#"Tipo cambiado", "Sucursal nombre corto", each Text.Middle([SUCURSAL_NOMBRE],9))
+				in
+				    #"Personalizada agregada"
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

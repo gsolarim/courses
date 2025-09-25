@@ -1,0 +1,39 @@
+expression Tickets_2021 =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\diana\Downloads\Tickets_2021.xlsx"), null, true),
+		    Sheet_Sheet = Source{[Item="Sheet",Kind="Sheet"]}[Data],
+		    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet_Sheet, [PromoteAllScalars=true])
+		in
+		    #"Encabezados promovidos"
+	lineageTag: 51ee1acd-1251-43f5-a68f-25be48e45340
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+
+expression Tickets_2022 =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\diana\Downloads\Tickets_2022.xlsx"), null, true),
+		    Sheet_Sheet = Source{[Item="Sheet",Kind="Sheet"]}[Data],
+		    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet_Sheet, [PromoteAllScalars=true])
+		in
+		    #"Encabezados promovidos"
+	lineageTag: 23880294-e59d-434d-9c0b-07211f501a15
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+
+expression Tickets_2023 =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\diana\Downloads\Tickets_2023.xlsx"), null, true),
+		    Sheet_Sheet = Source{[Item="Sheet",Kind="Sheet"]}[Data],
+		    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet_Sheet, [PromoteAllScalars=true])
+		in
+		    #"Encabezados promovidos"
+	lineageTag: 78c6fcbc-aeba-4dc3-8f3e-adb07a15c8df
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

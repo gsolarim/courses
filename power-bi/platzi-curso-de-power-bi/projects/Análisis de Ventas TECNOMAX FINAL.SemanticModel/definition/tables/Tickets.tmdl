@@ -1,0 +1,157 @@
+table Tickets
+	lineageTag: 33ebfdc9-a5cc-40ee-b521-f65a991e0e3c
+
+	measure 'Conteo de tickets' = DISTINCTCOUNT(Tickets[Ticket ID])
+		formatString: 0
+		lineageTag: 7f781bbc-484f-49f7-9c3b-45d94457e1d2
+
+	measure 'Ticket promedio' = AVERAGE(Tickets[Total de ticket con descuento por nivel de cuenta])
+		lineageTag: e8412b4f-4989-46ac-8b74-128fabf7cfd4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Conteo de productos' = DISTINCTCOUNT(Tickets[Producto ID])
+		formatString: 0
+		lineageTag: f3af7fd5-9c57-4058-abc0-cf79b7beca76
+
+	measure 'Conteo de vendedores' = DISTINCTCOUNT(Tickets[Vendedor ID])
+		formatString: 0
+		lineageTag: 57c92040-51ec-4afd-8b07-c6044e652cd7
+
+	measure 'Total con descuento mismo mes del año anterior' =
+			
+			CALCULATE(SUM([Total de ticket con descuento por nivel de cuenta]),SAMEPERIODLASTYEAR(Calendario[Date]))
+		lineageTag: 7b7a322a-b45c-4b87-b3d6-b9319d15fe5c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Linea de Venta ID'
+		dataType: string
+		lineageTag: a6b401fd-aa23-4abb-871e-b1a769054b98
+		summarizeBy: none
+		sourceColumn: Linea de Venta ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ticket ID'
+		dataType: string
+		lineageTag: 1f32bcb1-a672-4fb6-a56e-4bd092801047
+		summarizeBy: none
+		sourceColumn: Ticket ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Precio Total'
+		dataType: string
+		lineageTag: cb8dd941-b50a-4fe7-8387-3e4593f93cd9
+		summarizeBy: none
+		sourceColumn: Precio Total
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Precio Unitario'
+		dataType: string
+		lineageTag: 8e61ed93-cbfe-45bc-a54b-5daa40c87e99
+		summarizeBy: none
+		sourceColumn: Precio Unitario
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cantidad
+		dataType: string
+		lineageTag: 22fb32ca-8d4e-4543-99ee-5371e645d678
+		summarizeBy: none
+		sourceColumn: Cantidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Producto ID'
+		dataType: string
+		lineageTag: 0fe3c3ff-dcc4-4ecb-a9b2-634334f2d9e6
+		summarizeBy: none
+		sourceColumn: Producto ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Venta'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e3746658-b83e-4553-9328-5dc012b9ca9d
+		summarizeBy: none
+		sourceColumn: Fecha Venta
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vendedor ID'
+		dataType: string
+		lineageTag: dae44ce6-baa1-46d1-9826-e59643d716ea
+		summarizeBy: none
+		sourceColumn: Vendedor ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cliente ID'
+		dataType: string
+		lineageTag: 06ccbfcb-f892-4ee0-bbf4-42548ef2ddee
+		summarizeBy: none
+		sourceColumn: Cliente ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sucursal ID'
+		dataType: string
+		lineageTag: ebdb3045-accc-44ee-b9ee-f1b0dd2cfeaf
+		summarizeBy: none
+		sourceColumn: Sucursal ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Descuento por nivel de cuenta' = RELATED(Clientes[Descuento por nivel de cuenta])
+		lineageTag: 5d5063f4-19dd-437f-b6fe-35747ef04ddb
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Total de ticket con descuento por nivel de cuenta' =
+			
+			[Precio Total] * (1 - [Descuento por nivel de cuenta])
+		lineageTag: ea41dbf7-b35a-45c1-b19a-7ede4b485f6c
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Sucursal ID (Corrección)' =
+			
+			RELATED(Vendedores[SucursalID])
+		lineageTag: 109a34ed-22bb-434d-a489-c0f7247f4a58
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Tickets = m
+		mode: import
+		source =
+				let
+				    Origen = Table.Combine({Tickets_2021, Tickets_2022, Tickets_2023}),
+				    #"Filas ordenadas" = Table.Sort(Origen,{{"Fecha Venta", Order.Descending}}),
+				    #"Filas en blanco eliminadas" = Table.SelectRows(#"Filas ordenadas", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Filas en blanco eliminadas",{{"Ticket ID", type text}, {"Linea de Venta ID", type text}, {"Sucursal ID", type text}}),
+				    #"Filas filtradas" = Table.SelectRows(#"Tipo cambiado", each true),
+				    #"Valor reemplazado" = Table.ReplaceValue(#"Filas filtradas","None",null,Replacer.ReplaceValue,{"Cliente ID"}),
+				    #"Filas filtradas1" = Table.SelectRows(#"Valor reemplazado", each true),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Filas filtradas1",{{"Cliente ID", type text}, {"Vendedor ID", type text}, {"Fecha Venta", type date}, {"Producto ID", type text}}),
+				    #"Otras columnas quitadas" = Table.SelectColumns(#"Tipo cambiado1",{"Precio Total", "Precio Unitario", "Cantidad", "Producto ID", "Fecha Venta", "Vendedor ID", "Cliente ID", "Sucursal ID", "Linea de Venta ID", "Ticket ID"}),
+				    #"Columnas reordenadas" = Table.ReorderColumns(#"Otras columnas quitadas",{"Linea de Venta ID", "Ticket ID", "Precio Total", "Precio Unitario", "Cantidad", "Producto ID", "Fecha Venta", "Vendedor ID", "Cliente ID", "Sucursal ID"})
+				in
+				    #"Columnas reordenadas"
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

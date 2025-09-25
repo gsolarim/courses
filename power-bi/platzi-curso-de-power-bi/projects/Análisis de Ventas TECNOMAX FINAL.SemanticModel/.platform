@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Análisis de Ventas TECNOMAX FINAL"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "1151e8db-a30f-4838-bf45-953faad7286c"
+  }
+}

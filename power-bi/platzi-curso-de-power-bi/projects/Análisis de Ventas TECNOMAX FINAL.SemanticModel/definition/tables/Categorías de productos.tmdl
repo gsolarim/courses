@@ -1,0 +1,47 @@
+table 'Categorías de productos'
+	lineageTag: 756eab37-eba2-4dde-862b-70ceb45829e5
+
+	column Categoría
+		dataType: string
+		lineageTag: 020eef7a-e4aa-419c-89ee-e20cdf8ff5b2
+		summarizeBy: none
+		sourceColumn: Categoría
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subcategoría
+		dataType: string
+		lineageTag: 068faad6-3925-48a8-9654-de4665894fb2
+		summarizeBy: none
+		sourceColumn: Subcategoría
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Categoría + Subcategoría'
+		dataType: string
+		lineageTag: eb15e36a-6612-45c9-9bf2-9d7297005550
+		summarizeBy: none
+		sourceColumn: Categoría + Subcategoría
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Categorías de productos' = m
+		mode: import
+		source =
+				let
+				    Source = GoogleSheets.Contents("https://docs.google.com/spreadsheets/d/1KLnRPohBw2MS2UXNui2SU9rgnLvt-2MMcSEm2Wi2veQ/edit?gid=0#gid=0"),
+				    #"Categorías de productos_Table" = Source{[name="Categorías de productos",ItemKind="Table"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(#"Categorías de productos_Table", [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"Categoría", type text}, {"Subcategoría", type text}}),
+				    #"Rellenar hacia abajo" = Table.FillDown(#"Tipo cambiado",{"Categoría"}),
+				    #"Valor reemplazado" = Table.ReplaceValue(#"Rellenar hacia abajo","",null,Replacer.ReplaceValue,{"Categoría"}),
+				    #"Rellenar hacia abajo1" = Table.FillDown(#"Valor reemplazado",{"Categoría"}),
+				    #"Columna combinada insertada" = Table.AddColumn(#"Rellenar hacia abajo1", "Combinada", each Text.Combine({[Categoría], ", ", [Subcategoría]}), type text),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Columna combinada insertada",{{"Combinada", "Categoría + Subcategoría"}})
+				in
+				    #"Columnas con nombre cambiado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegación
+

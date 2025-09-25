@@ -1,0 +1,117 @@
+table Clientes
+	lineageTag: bef6ede7-7167-4e87-baa4-cc9399946fe6
+
+	column ClienteID
+		dataType: int64
+		formatString: 0
+		lineageTag: 7eb67799-4d95-4cd8-a8d0-54c834a0f702
+		summarizeBy: none
+		sourceColumn: ClienteID
+
+		annotation SummarizationSetBy = Automatic
+
+	column NombreCliente
+		dataType: string
+		lineageTag: 78d55571-f49a-49ca-bb7d-045cbde214e8
+		summarizeBy: none
+		sourceColumn: NombreCliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaNacimiento
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 627ca82d-09bb-4573-b120-93ab2cb719ce
+		summarizeBy: none
+		sourceColumn: FechaNacimiento
+
+		variation Variación
+			isDefault
+			relationship: 4fc07450-3e91-4130-ac3b-f16f4c2946ca
+			defaultHierarchy: LocalDateTable_a791a06c-d720-40e5-a342-59715b5a7616.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column FechaRegistro
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: dd0b3ba9-fa35-4a57-a13b-38fb5edbc971
+		summarizeBy: none
+		sourceColumn: FechaRegistro
+
+		variation Variación
+			isDefault
+			relationship: cd10e1c3-5413-494f-8b09-2bc24b0af14b
+			defaultHierarchy: LocalDateTable_d884fceb-27a0-485a-8ef2-c5f44e798733.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CorreoElectronico
+		dataType: string
+		lineageTag: 8f93bb05-2866-4be3-a646-edf1daa8b7bd
+		summarizeBy: none
+		sourceColumn: CorreoElectronico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de cuenta'
+		dataType: string
+		lineageTag: 6537b73c-2ab3-45eb-bbbf-eb8698d2a149
+		summarizeBy: none
+		sourceColumn: Tipo de cuenta
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nivel de cuenta'
+		dataType: string
+		lineageTag: fc1a2b68-a2e8-45f2-9554-d0220709bff5
+		summarizeBy: none
+		sourceColumn: Nivel de cuenta
+
+		annotation SummarizationSetBy = Automatic
+
+	column SucursalRegistro
+		dataType: string
+		lineageTag: 1a8213e3-8523-46b4-9a6c-6db5a2898e34
+		summarizeBy: none
+		sourceColumn: SucursalRegistro
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Descuento por nivel de cuenta'
+		dataType: double
+		lineageTag: ba8eadbf-e7c5-4bb0-a8f4-359aa5906818
+		summarizeBy: sum
+		sourceColumn: Descuento por nivel de cuenta
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Clientes = m
+		mode: import
+		source =
+				let
+				    Source = GoogleSheets.Contents("https://docs.google.com/spreadsheets/d/1KLnRPohBw2MS2UXNui2SU9rgnLvt-2MMcSEm2Wi2veQ/edit?gid=0#gid=0"),
+				    Clientes_Table = Source{[name="Clientes",ItemKind="Table"]}[Data],
+				    #"Filas filtradas" = Table.SelectRows(Clientes_Table, each true),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(#"Filas filtradas", [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"ClienteID", Int64.Type}, {"NombreCliente", type text}, {"FechaNacimiento", type date}, {"FechaRegistro", type date}, {"CorreoElectronico", type text}, {"Tipo y Nivel de Cuenta", type text}, {"SucursalRegistro", type text}}),
+				    #"Dividir columna por delimitador" = Table.SplitColumn(#"Tipo cambiado", "Tipo y Nivel de Cuenta", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"Tipo y Nivel de Cuenta.1", "Tipo y Nivel de Cuenta.2"}),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Dividir columna por delimitador",{{"Tipo y Nivel de Cuenta.1", type text}, {"Tipo y Nivel de Cuenta.2", type text}}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Tipo cambiado1",{{"Tipo y Nivel de Cuenta.1", "Tipo de cuenta"}, {"Tipo y Nivel de Cuenta.2", "Nivel de cuenta"}}),
+				    #"Filas filtradas1" = Table.SelectRows(#"Columnas con nombre cambiado", each true),
+				    #"Columna condicional agregada" = Table.AddColumn(#"Filas filtradas1", "Personalizado", each if [Nivel de cuenta] = "Plata" then 0.03 else if [Nivel de cuenta] = "Oro" then 0.08 else if [Nivel de cuenta] = "Platino" then 0.12 else null),
+				    #"Columnas con nombre cambiado1" = Table.RenameColumns(#"Columna condicional agregada",{{"Personalizado", "Descuento por nivel de cuenta"}}),
+				    #"Tipo cambiado2" = Table.TransformColumnTypes(#"Columnas con nombre cambiado1",{{"Descuento por nivel de cuenta", type number}})
+				in
+				    #"Tipo cambiado2"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegación
+
