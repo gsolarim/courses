@@ -16,8 +16,20 @@ fun main(args: Array<String>){
     println(profesores)
     // profesores.fill("Aracelly")
     // println(profesores)
-    // Funciones en listas
+    // Tamaño de lista
     println(profesores.size)
+    // Ordenamientos
     profesores.reverse()
     println(profesores)
+    val ascendente = profesores.sorted()
+    println(ascendente)
+    val descendente = profesores.sortedDescending()
+    println(descendente)
+
+    val calificaciones = mutableListOf<Int>(1,3,5,6,10,9,8)
+    val ordenaCalificaciones = calificaciones.sortedDescending()
+    println(ordenaCalificaciones)
+
+    val filtrado = ordenaCalificaciones.filter{ x-> x > 5}
+    println(filtrado)
 }
