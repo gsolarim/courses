@@ -5,4 +5,13 @@
 **/.pbi/cache.abf
 
 *.pyc
-*.env
+
+# Archivos de configuración
+.env
+
+# Entornos virtuales
+venv/
+env/
+
+# macOS
+.DS_Store
